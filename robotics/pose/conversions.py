@@ -57,9 +57,12 @@ def rpy_to_quaternion(roll: float, pitch: float, yaw: float) -> Quaternion:
 
 def axis_angle_to_quaternion(axis: np.array) -> Quaternion:
     angle = np.linalg.norm(axis)
+
     w = np.cos(angle / 2)
-    sin_half_angle = np.sin(angle / 2)
-    new_axis = axis / angle * sin_half_angle
+    new_axis = np.zeros(3)
+    if angle > 1e-12:
+        sin_half_angle = np.sin(angle / 2)
+        new_axis = axis / angle * sin_half_angle
     return Quaternion(w, new_axis[0], new_axis[1], new_axis[2])
 
 
