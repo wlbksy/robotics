@@ -219,7 +219,7 @@ class Quaternion:
         q = Quaternion(self.w, self.x, self.y, self.z)
         if not self.is_unit():
             q = self.to_unit()
-        q_vec = q.to_vector()[1:]
+        q_vec = q.get_vector()
         t = 2 * np.cross(q_vec, v)
         result = v + q.w * t + np.cross(q_vec, t)
         return result
