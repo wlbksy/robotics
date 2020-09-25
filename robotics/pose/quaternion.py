@@ -33,7 +33,10 @@ class Quaternion:
     def to_unit(self):
         """Return an equivalent unit quaternion
         """
-        norm = np.sqrt(self.norm_square())
+        squared_norm = self.norm_square()
+        if squared_norm < 1e-12:
+            return Quaternion(1, 0, 0, 0)
+        norm = np.sqrt(squared_norm)
         return Quaternion(self.w / norm, self.x / norm, self.y / norm, self.z / norm)
 
     def to_vector(self) -> np.array:
@@ -127,6 +130,8 @@ class Quaternion:
         if self.is_unit():
             return self.conj()
         squared_norm = self.norm_square()
+        if squared_norm < 1e-12:
+            return Quaternion(1, 0, 0, 0)
         return self.conj() / squared_norm
 
     def __itruediv__(self, other):
@@ -216,9 +221,7 @@ class Quaternion:
         """
         if v.shape != (3,):
             raise "v should be a vector of 3"
-        q = Quaternion(self.w, self.x, self.y, self.z)
-        if not self.is_unit():
-            q = self.to_unit()
+        q = self.to_unit()
         q_vec = q.get_vector()
         t = 2 * np.cross(q_vec, v)
         result = v + q.w * t + np.cross(q_vec, t)
